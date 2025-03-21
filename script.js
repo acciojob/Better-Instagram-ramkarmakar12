@@ -1,34 +1,29 @@
-//your code here
-document.addEventListener("DOMContentLoaded", () => {
-  const images = document.querySelectorAll(".image");
-  let draggedElement = null;
+let draggedElement;
 
-  images.forEach((image) => {
-    image.addEventListener("dragstart", (e) => {
-      draggedElement = e.target;
-      e.dataTransfer.setData("text/plain", draggedElement.id);
-      setTimeout(() => e.target.classList.add("hidden"), 1000);
-    });
+// Select all draggable elements
+const draggables = document.querySelectorAll('.draggable');
 
-    image.addEventListener("dragover", (e) => {
-      e.preventDefault();
-    });
+draggables.forEach(div => {
+  // When starting to drag, store the dragged element reference
+  div.addEventListener('dragstart', (e) => {
+    draggedElement = e.target;
+  });
 
-    image.addEventListener("drop", (e) => {
-      e.preventDefault();
-      
-      if (!draggedElement || draggedElement === e.target) return;
+  // Allow dragover to enable dropping by preventing default behavior
+  div.addEventListener('dragover', (e) => {
+    e.preventDefault();
+  });
 
-      // Swap background images
-      let draggedBg = window.getComputedStyle(draggedElement).backgroundImage;
-      let targetBg = window.getComputedStyle(e.target).backgroundImage;
-      draggedElement.style.backgroundImage = targetBg;
-      e.target.style.backgroundImage = draggedBg;
-    });
+  // When dropped, swap the background images of the dragged element and the target element
+  div.addEventListener('drop', (e) => {
+    e.preventDefault();
+    // Prevent swapping the element with itself
+    if (draggedElement === e.target) return;
 
-    image.addEventListener("dragend", (e) => {
-      e.target.classList.remove("hidden");
-      draggedElement = null;
-    });
+    // Swap the backgroundImage styles
+    const draggedBg = draggedElement.style.backgroundImage;
+    const targetBg = e.target.style.backgroundImage;
+    draggedElement.style.backgroundImage = targetBg;
+    e.target.style.backgroundImage = draggedBg;
   });
 });
